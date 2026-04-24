@@ -149,6 +149,7 @@ async def buy_ticket(req: BuyRequest):
                 if len(logs) > 100: logs.pop(0)
                 raise HTTPException(status_code=400, detail="Sold out")
 
-# Serve the frontend build
+# Serve the frontend build (only if dist folder exists)
 FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
-app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
+if os.path.isdir(FRONTEND_DIST):
+    app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
