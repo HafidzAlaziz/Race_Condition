@@ -16,6 +16,7 @@ function App() {
   const [isBuying, setIsBuying] = useState(false);
   const [hasBought, setHasBought] = useState(false); // user already tried
   const [customTickets, setCustomTickets] = useState(5);
+  const [isResetting, setIsResetting] = useState(false);
 
   const successContainerRef = useRef(null);
   const failedContainerRef = useRef(null);
@@ -79,14 +80,21 @@ function App() {
   };
 
   const resetSimulation = async () => {
-    await fetch(`${API_URL}/reset`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Bypass-Tunnel-Reminder': 'true'
-      },
-      body: JSON.stringify({ initial_tickets: parseInt(customTickets) || 5 }),
-    });
+    setIsResetting(true);
+    try {
+      await fetch(`${API_URL}/reset`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Bypass-Tunnel-Reminder': 'true'
+        },
+        body: JSON.stringify({ initial_tickets: parseInt(customTickets) || 5 }),
+      });
+      // Simulate slight delay so the animation is visible
+      await new Promise(r => setTimeout(r, 600)); 
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   const startWar = async () => {
@@ -233,9 +241,15 @@ function App() {
           <button
             className="outline"
             onClick={resetSimulation}
-            style={{ width: '100%', borderColor: 'var(--danger-color)', color: 'var(--danger-color)' }}
+            disabled={isResetting}
+            style={{ 
+              width: '100%', 
+              borderColor: 'var(--danger-color)', 
+              color: 'var(--danger-color)',
+              opacity: isResetting ? 0.7 : 1
+            }}
           >
-            🔄 Reset Semua
+            {isResetting ? '⏳ Sedang Mereset...' : '🔄 Reset Semua'}
           </button>
         </div>
 
