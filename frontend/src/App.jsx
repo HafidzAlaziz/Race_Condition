@@ -22,11 +22,21 @@ function App() {
   const failedContainerRef = useRef(null);
   const API_URL = "https://49c0-103-249-18-45.ngrok-free.app/api";
 
+  const fetchAPI = async (endpoint, options = {}) => {
+    return fetch(`${API_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        ...options.headers,
+        "ngrok-skip-browser-warning": "69420",
+      },
+    });
+  };
+
   // Poll status from server
   useEffect(() => {
     const interval = setInterval(async () => { // Poll faster to prevent desync (250ms)
       try {
-        const res = await fetch(`${API_URL}/status`);
+        const res = await fetchAPI("/status");
         const data = await res.json();
         setTickets(data.tickets_available);
         setCurrentMode(data.current_mode);
@@ -67,7 +77,7 @@ function App() {
 
   // ---- Admin Actions ----
   const changeMode = async (mode) => {
-    await fetch(`${API_URL}/mode`, {
+    await fetchAPI("/mode", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mode }),
@@ -77,7 +87,7 @@ function App() {
   const resetSimulation = async () => {
     setIsResetting(true);
     try {
-      await fetch(`${API_URL}/reset`, {
+      await fetchAPI("/reset", {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
@@ -92,7 +102,7 @@ function App() {
   };
 
   const startWar = async () => {
-    await fetch(`${API_URL}/start`, { method: 'POST' });
+    await fetchAPI("/start", { method: 'POST' });
   };
 
   // ---- User Action ----
@@ -100,7 +110,7 @@ function App() {
     if (isBuying || hasBought || warState !== 'open') return;
     setIsBuying(true);
     try {
-      const res = await fetch(`${API_URL}/buy`, {
+      const res = await fetchAPI("/buy", {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
