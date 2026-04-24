@@ -20,7 +20,7 @@ function App() {
 
   const successContainerRef = useRef(null);
   const failedContainerRef = useRef(null);
-  const API_URL = "https://nsvuv-103-249-18-45.run.pinggy-free.link/api";
+  const API_URL = "https://zwcqb-103-249-18-45.run.pinggy-free.link/api";
 
   // Poll status from server
   useEffect(() => {
