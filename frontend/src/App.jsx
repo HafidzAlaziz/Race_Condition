@@ -20,7 +20,7 @@ function App() {
 
   const successContainerRef = useRef(null);
   const failedContainerRef = useRef(null);
-  const API_URL = "https://d8de8bbf4f93eb.lhr.life/api";
+  const API_URL = "https://60f37e16a6b38e.lhr.life/api";
 
   // Poll status from server
   useEffect(() => {
