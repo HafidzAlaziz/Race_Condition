@@ -25,16 +25,17 @@ Write-Host "      Backend berjalan di port 8000" -ForegroundColor Green
 # STEP 2: Jalankan tunnel & tangkap URL-nya
 # -----------------------------------------------------------
 Write-Host ""
-Write-Host "[2/4] Menghubungkan tunnel localhost.run..." -ForegroundColor Yellow
+Write-Host "[2/4] Menghubungkan tunnel ngrok..." -ForegroundColor Yellow
 
 $TempLog = "$env:TEMP\tunnel_output.txt"
 if (Test-Path $TempLog) { Remove-Item $TempLog }
 
-# Jalankan SSH tunnel di background, output ke file
+# Jalankan ngrok tunnel di background, output ke file
+$NgrokExe = "C:\Users\hafid\AppData\Local\Microsoft\WinGet\Links\ngrok.exe"
 $TunnelJob = Start-Job -ScriptBlock {
-    param($log)
-    ssh -R 80:localhost:8000 nokey@localhost.run 2>&1 | Tee-Object -FilePath $log
-} -ArgumentList $TempLog
+    param($exe, $log)
+    & $exe http 8000 --log=stdout 2>&1 | Tee-Object -FilePath $log
+} -ArgumentList $NgrokExe, $TempLog
 
 # Tunggu URL muncul (max 20 detik)
 $url = $null
@@ -47,8 +48,8 @@ while ($elapsed -lt $timeout) {
     $elapsed++
     if (Test-Path $TempLog) {
         $content = Get-Content $TempLog -Raw -ErrorAction SilentlyContinue
-        if ($content -match "https://([a-z0-9]+\.lhr\.life)") {
-            $url = "https://$($Matches[1])"
+        if ($content -match "url=(https://[a-z0-9\-]+\.ngrok-free\.app)") {
+            $url = $Matches[1]
             break
         }
     }
@@ -57,7 +58,7 @@ while ($elapsed -lt $timeout) {
 if (-not $url) {
     Write-Host ""
     Write-Host "ERROR: Gagal mendapatkan URL tunnel!" -ForegroundColor Red
-    Write-Host "Pastikan koneksi internet Anda aktif dan coba lagi." -ForegroundColor Red
+    Write-Host "Pastikan koneksi internet Anda aktif dan token ngrok sudah benar." -ForegroundColor Red
     Read-Host "Tekan Enter untuk keluar"
     exit 1
 }

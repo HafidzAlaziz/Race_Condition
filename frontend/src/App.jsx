@@ -20,7 +20,7 @@ function App() {
 
   const successContainerRef = useRef(null);
   const failedContainerRef = useRef(null);
-  const API_URL = "https://805fe233e68c98.lhr.life/api";
+  const API_URL = "https://ed63-103-249-18-45.ngrok-free.app/api";
 
   // Poll status from server
   useEffect(() => {
