@@ -20,15 +20,13 @@ function App() {
 
   const successContainerRef = useRef(null);
   const failedContainerRef = useRef(null);
-  const API_URL = "https://major-queens-exist.loca.lt/api";
+  const API_URL = "https://nsvuv-103-249-18-45.run.pinggy-free.link/api";
 
   // Poll status from server
   useEffect(() => {
     const interval = setInterval(async () => { // Poll faster to prevent desync (250ms)
       try {
-        const res = await fetch(`${API_URL}/status`, {
-          headers: { 'Bypass-Tunnel-Reminder': 'true' }
-        });
+        const res = await fetch(`${API_URL}/status`);
         const data = await res.json();
         setTickets(data.tickets_available);
         setCurrentMode(data.current_mode);
@@ -71,10 +69,7 @@ function App() {
   const changeMode = async (mode) => {
     await fetch(`${API_URL}/mode`, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Bypass-Tunnel-Reminder': 'true'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mode }),
     });
   };
@@ -85,8 +80,7 @@ function App() {
       await fetch(`${API_URL}/reset`, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'Bypass-Tunnel-Reminder': 'true'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ initial_tickets: parseInt(customTickets) || 5 }),
       });
@@ -98,10 +92,7 @@ function App() {
   };
 
   const startWar = async () => {
-    await fetch(`${API_URL}/start`, { 
-      method: 'POST',
-      headers: { 'Bypass-Tunnel-Reminder': 'true' }
-    });
+    await fetch(`${API_URL}/start`, { method: 'POST' });
   };
 
   // ---- User Action ----
@@ -112,8 +103,7 @@ function App() {
       const res = await fetch(`${API_URL}/buy`, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'Bypass-Tunnel-Reminder': 'true'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ user_id: username }),
       });
