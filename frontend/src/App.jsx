@@ -20,7 +20,7 @@ function App() {
 
   const successContainerRef = useRef(null);
   const failedContainerRef = useRef(null);
-  const API_URL = "https://49c0-103-249-18-45.ngrok-free.app/api";
+  const API_URL = "https://d6e9-114-124-151-255.ngrok-free.app/api";
 
   const fetchAPI = async (endpoint, options = {}) => {
     return fetch(`${API_URL}${endpoint}`, {
